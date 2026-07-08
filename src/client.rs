@@ -15,7 +15,6 @@ use crate::ECHOMAMBO_SERVER_ADDR;
         stream.peer_addr().unwrap()
     );
 
-    
         let incoming_message = &message.to_string();
         
         stream.write_all(incoming_message.as_bytes())
@@ -42,7 +41,7 @@ use crate::ECHOMAMBO_SERVER_ADDR;
         return response.into_owned();
     }
 
-//=== Function to connect to the server ===//
+//=== handles connection to server ===//
 async fn connect_to_server() -> TcpStream {
 
    if let Ok( stream) = TcpStream::connect(ECHOMAMBO_SERVER_ADDR).await {

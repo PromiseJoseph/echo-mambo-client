@@ -1,5 +1,5 @@
 [package]
-name = "echo-mambo-client"
+name = "EchoMambo-client"
 version = "0.1.0"
 edition = "2024"
 

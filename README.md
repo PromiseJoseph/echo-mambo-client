@@ -40,7 +40,7 @@ cargo build --release
 
 Before using the client, make sure the EchoMambo server is running.
 
-By default, the client connects to:
+By default, the client connects to `ECHOMAMBO_SERVER_ADDR` constant, which is set to:
 
 ```
 127.0.0.1:7777
@@ -56,22 +56,20 @@ By default, the client connects to:
 - nc
 
 ```bash
-nc 127.0.0.1 7777
+nc 127.0.0.1 7778
 ```
 
 ---
 
 ## Configuration
 
-The server address is configured using the `ECHOMAMBO_SERVER_ADDR` constant.
+The client server address is configured using the `ECHOMAMBO_CLIENT_ADDR` constant.
 
 Default configuration:
 
 ```text
-127.0.0.1:7777
+127.0.0.1:7778
 ```
-
-To connect to another server, simply update the constant.
 
 ---
 

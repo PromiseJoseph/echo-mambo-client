@@ -51,7 +51,9 @@ By default, the client connects to `ECHOMAMBO_SERVER_ADDR` constant, which is se
 cargo run --release
 ```
 
-## Sserver will start listening on `127.0.0.1:7778`
+Server will start listening on `127.0.0.1:7778`
+
+---
 
 ### 3. Call the Client
 

@@ -38,15 +38,20 @@ cargo build --release
 
 ### 2. Start an EchoMambo Server
 
-Before using the client, make sure the EchoMambo server is running.
+Before using the client, make sure the [EchoMambo](https://github.com/PromiseJoseph/echo-mambo) server is running.
 
 By default, the client connects to `ECHOMAMBO_SERVER_ADDR` constant, which is set to:
-
-```
-127.0.0.1:7777
-```
+`127.0.0.1:7777`
 
 ---
+
+### Start the Client
+
+```bash
+cargo run --release
+```
+
+## Sserver will start listening on `127.0.0.1:7778`
 
 ### 3. Call the Client
 

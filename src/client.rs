@@ -1,5 +1,5 @@
-use tokio::{io::AsyncWriteExt, net::TcpStream};
-use tokio::io::{AsyncReadExt};
+use tokio::net::{TcpStream};
+use tokio::io::{AsyncReadExt,AsyncWriteExt};
 
 use crate::ECHOMAMBO_SERVER_ADDR;
 
@@ -11,9 +11,7 @@ use crate::ECHOMAMBO_SERVER_ADDR;
     // Connect to the EchoMambo server
     let mut stream = connect_to_server().await;   
 
-    println!("Connected to EchoMambo at {}", 
-        stream.peer_addr().unwrap()
-    );
+    println!("Connection established!");
 
         let incoming_message = &message.to_string();
         
@@ -21,7 +19,7 @@ use crate::ECHOMAMBO_SERVER_ADDR;
         .await
         .expect("Failed to send message to server");
 
-        println!("Sent message to server: {message}"); 
+        println!("Sent message to server: \"{}\"", message);
 
         let mut buffer = [0;1024];
         let bytes_read = match stream.read(&mut buffer).await {
@@ -37,7 +35,6 @@ use crate::ECHOMAMBO_SERVER_ADDR;
         }
     
         let response = String::from_utf8_lossy(&buffer[..bytes_read]);
-        println!("Received response from EchoMambo: {}", response);
         return response.into_owned();
     }
 

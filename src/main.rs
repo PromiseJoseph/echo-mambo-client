@@ -1,5 +1,5 @@
-use std::net::{TcpListener, TcpStream};
-use std::io::prelude::*;
+use tokio::net::{TcpStream, TcpListener};
+use tokio::io::{AsyncReadExt,AsyncWriteExt,};
 mod client;
 use client::call_echo_mambo;
 
@@ -14,12 +14,13 @@ async fn main() {
 
 println!("Starting EchoMamboClient on {}", ECHOMAMBO_CLIENT_ADDR);
 
-let listener: TcpListener  = TcpListener::bind(ECHOMAMBO_CLIENT_ADDR).expect("Failed to bind to address");
+let listener: TcpListener  = TcpListener::bind(ECHOMAMBO_CLIENT_ADDR).await.expect("Failed to bind to address");
 
 println!("EchoMamboClient is listening for incoming on {}", ECHOMAMBO_CLIENT_ADDR);
 
+//loop handles multiple incoming connections from user clients
 loop{
-    let(stream, _) = listener.accept().expect("Failed to accept incoming connection");
+    let(stream, _) = listener.accept().await.expect("Failed to accept incoming connection");
     println!("Accepted connection from {}", stream.peer_addr().unwrap());
     tokio::spawn(async move {
         handle_client(stream).await;
@@ -29,18 +30,31 @@ loop{
 
 async fn handle_client(mut stream: TcpStream) {
     let mut buffer = [0; BUFFER_SIZE];
-    let len  = stream.read(&mut buffer).unwrap();
-
-    let message = String::from_utf8_lossy(&buffer[..len]).to_string();
-    println!("Received message: {} : length {}", message, len );
+    //inner loop handles multiple messages from a single user client
+    loop {
+          let data_byte  = match stream.read(&mut buffer).await {
+                Ok(0) => {
+                    println!("Client closed the connection.");
+                    break;
+                }
+                Ok(n) => n,
+                Err(e) => {
+                    eprintln!("Failed to read from socket: {}", e);
+                    break;
+                }
+            };   
+  
+    let message = String::from_utf8_lossy(&buffer[..data_byte]).to_string();
+    println!("Received message: {} : length {}", message, data_byte );
+    
     let echomambo_message = call_echo_mambo(&message).await;
 
-
-    stream.write_all(echomambo_message.as_bytes()).unwrap(); // Send the response back to the user client
+    stream.write_all(echomambo_message.as_bytes()).await.unwrap(); // Send the response back to the user client
  
     println!("EchoMambo responded:  {}", echomambo_message);
 
 }   
 
+}
 
 

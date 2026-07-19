@@ -55,6 +55,16 @@ Server will start listening on `127.0.0.1:7778`
 
 ---
 
+#### Start the Client with Custom Addresses
+
+```bash
+cargo run --release <client_address:port> <server_address:port>
+```
+
+Server will start listening on the specified `<client_address:port>` and connect to the specified `<server_address:port>`
+
+---
+
 ### 3. Call the Client
 
 - rust-tcp-echo

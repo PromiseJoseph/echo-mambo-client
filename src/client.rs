@@ -6,12 +6,25 @@ use crate::ECHOMAMBO_SERVER_ADDR;
 pub async fn call_echo_mambo(message: &str) -> String {
     let server_addr_as_arg = std::env::args().nth(2);
 
-    println!("Connecting to EchoMambo...");
+    //fr debugging purpose.
+    println!(
+        "Connecting to EchoMambo on {}...",
+        server_addr_as_arg
+            .clone()
+            .unwrap_or_else(|| ECHOMAMBO_SERVER_ADDR.to_string())
+    );
 
     // Connect to the EchoMambo server
-    let mut stream =
+    let stream_res =
         connect_to_server(&server_addr_as_arg.unwrap_or(ECHOMAMBO_SERVER_ADDR.to_string())).await;
 
+    let mut stream = match stream_res {
+        Ok(strm) => strm,
+        Err(e) => {
+            eprintln!("Failed to connect to server: {}", e);
+            return String::from("Failed to connect to server.");
+        }
+    };
     println!(
         "Connection established with {}!",
         stream.peer_addr().unwrap()
@@ -44,10 +57,6 @@ pub async fn call_echo_mambo(message: &str) -> String {
 }
 
 //=== handles connection to server ===//
-async fn connect_to_server(server_addr: &str) -> TcpStream {
-    if let Ok(stream) = TcpStream::connect(server_addr).await {
-        stream
-    } else {
-        panic!("Failed to connect to server at {}", server_addr);
-    }
+async fn connect_to_server(server_addr: &str) -> Result<TcpStream, std::io::Error> {
+    TcpStream::connect(server_addr).await
 }
